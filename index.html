@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StoreBooks – Sua livraria online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <!-- Bootstrap: header, navbar, footer, grid geral, offcanvas, modais e toasts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Tailwind (CDN) + configuração em tailwind.config.js -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style type="text/tailwindcss">
+    @layer components {
+      .link-grow { @apply relative transition-colors duration-300 hover:text-brand-400 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-brand-400 hover:after:animate-growLine; }
+      .btn-yellow { @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-400 px-6 py-2.5 font-semibold text-ink-950 transition duration-200 hover:bg-brand-300 hover:-translate-y-0.5 active:scale-95; }
+      .btn-dark { @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-600 px-6 py-2.5 font-semibold text-ink-100 transition duration-200 hover:border-brand-400 hover:text-brand-400 active:scale-95; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================= CABEÇALHO / NAVBAR ================= -->
+<header class="sticky-top shadow-book">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-ink-950 border-bottom border-ink-700 py-3" style="background:#0a0a0a">
+    <div class="container">
+      <a class="navbar-brand font-display text-2xl text-brand-400 animate-fadeIn" href="#inicio"><i class="bi bi-book-half"></i> StoreBooks</a>
+      <div class="d-flex align-items-center gap-3 order-lg-last">
+        <button class="btn p-0 text-white position-relative link-grow" id="btnWishNav" aria-label="Favoritos" data-action="toggle-wish-filter"><i class="bi bi-heart fs-5"></i><span id="wishCount" class="badge rounded-pill bg-warning text-dark position-absolute top-0 start-100 translate-middle d-none">0</span></button>
+        <button class="btn p-0 text-white position-relative" id="btnCart" aria-label="Abrir carrinho" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas"><i class="bi bi-bag fs-5"></i><span id="cartCount" class="badge rounded-pill bg-warning text-dark position-absolute top-0 start-100 translate-middle">0</span></button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto gap-lg-3">
+          <li class="nav-item"><a href="#destaques" class="nav-link link-grow px-0 mx-lg-2 text-white animate-fadeIn" style="animation-delay:.1s">Destaques</a></li>
+          <li class="nav-item"><a href="#livros" class="nav-link link-grow px-0 mx-lg-2 text-white animate-fadeIn" style="animation-delay:.2s">Livros</a></li>
+          <li class="nav-item"><a href="#categorias" class="nav-link link-grow px-0 mx-lg-2 text-white animate-fadeIn" style="animation-delay:.3s">Categorias</a></li>
+          <li class="nav-item"><a href="#contato" class="nav-link link-grow px-0 mx-lg-2 text-white animate-fadeIn" style="animation-delay:.4s">Contato</a></li>
+        </ul>
+        <form class="d-flex align-items-center gap-2 animate-fadeIn my-3 my-lg-0 me-lg-3" role="search" id="searchForm" style="animation-delay:.5s">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Buscar título ou autor..." aria-label="Buscar"
+            class="w-40 focus:w-64 transition-all duration-500 ease-in-out rounded-full px-4 py-2 bg-ink-800 text-white placeholder-ink-400 border border-ink-600 outline-none focus:border-brand-400 focus:shadow-glow">
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main id="inicio">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero-glow">
+    <div class="container py-5">
+      <div class="row align-items-center gy-5 py-lg-4">
+        <div class="col-lg-6 animate-fadeIn">
+          <span class="inline-block mb-3 rounded-full border border-brand-400/40 px-3 py-1 text-sm text-brand-400">📦 Frete grátis acima de R$ 150</span>
+          <h1 class="font-display text-4xl sm:text-5xl 2xl:text-7xl text-white leading-tight">Histórias que <span class="text-brand-400">mudam</span> você</h1>
+          <p class="mt-4 text-lg text-ink-300 max-w-xl">Clássicos, best-sellers e lançamentos com os melhores preços. Use o cupom <b class="text-brand-400">STORE10</b> e ganhe 10% de desconto.</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="#livros" class="btn-yellow no-underline"><i class="bi bi-search"></i> Ver catálogo</a>
+            <a href="#destaques" class="btn-dark no-underline">Livro em destaque</a>
+          </div>
+        </div>
+        <div class="col-lg-6"><div id="heroCovers" class="flex justify-center items-end gap-3 sm:gap-5"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DESTAQUE (CSS GRID com áreas) ================= -->
+  <section id="destaques" class="container my-5 py-4">
+    <h2 class="font-display text-3xl mb-4 text-white">Livro em <span class="text-brand-400">destaque</span></h2>
+    <article id="featured" class="featured-grid p-4 p-md-5 rounded-3xl bg-ink-900 border border-ink-700 shadow-book"></article>
+  </section>
+
+  <!-- ================= CATÁLOGO ================= -->
+  <section id="livros" class="container my-5 py-4">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
+      <div>
+        <h2 class="font-display text-3xl text-white">Nosso <span class="text-brand-400">catálogo</span></h2>
+        <p id="resultInfo" class="text-ink-400 mb-0"></p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <label for="sortSelect" class="text-ink-300 text-sm">Ordenar:</label>
+        <select id="sortSelect" class="form-select form-select-sm w-auto">
+          <option value="rel">Relevância</option><option value="asc">Menor preço</option><option value="desc">Maior preço</option>
+          <option value="az">A–Z</option><option value="rating">Melhor avaliação</option>
+        </select>
+      </div>
+    </div>
+    <div id="chips" class="flex flex-wrap gap-2 mb-4"></div>
+    <div id="grid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6"></div>
+    <div id="empty" class="hidden text-center py-5 text-ink-400"><i class="bi bi-emoji-frown fs-1"></i><p class="mt-2">Nenhum livro encontrado.</p><button class="btn-dark" data-action="reset">Limpar filtros</button></div>
+  </section>
+
+  <!-- ================= CATEGORIAS ================= -->
+  <section id="categorias" class="container my-5 py-4">
+    <h2 class="font-display text-3xl mb-4 text-white">Explore por <span class="text-brand-400">categoria</span></h2>
+    <div id="cats" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"></div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="container my-5">
+    <div class="rounded-3xl bg-brand-400 text-ink-950 p-4 p-md-5 text-center">
+      <h2 class="font-display text-3xl">Receba ofertas em primeira mão</h2>
+      <p>Assine e ganhe o cupom STORE10.</p>
+      <form id="newsForm" class="mx-auto flex flex-col sm:flex-row gap-2 max-w-lg" novalidate>
+        <input id="newsEmail" type="email" required placeholder="seu@email.com" class="form-control rounded-full" style="background:#fff;color:#0a0a0a">
+        <button class="rounded-full bg-ink-950 text-brand-400 px-6 py-2 font-semibold transition hover:bg-ink-800 active:scale-95">Assinar</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- ================= RODAPÉ ================= -->
+<footer id="contato" class="bg-ink-950 border-top border-ink-700 pt-5 pb-4 mt-5" style="background:#0a0a0a">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <h5 class="font-display text-2xl text-brand-400"><i class="bi bi-book-half"></i> StoreBooks</h5>
+        <p class="text-ink-400">Sua livraria online fictícia, feita com CSS Grid, Tailwind e Bootstrap.</p>
+      </div>
+      <div class="col-md-4">
+        <h5 class="font-semibold text-white">Links</h5>
+        <ul class="list-unstyled space-y-1">
+          <li><a href="#destaques" class="link-grow text-ink-300 no-underline">Destaques</a></li>
+          <li><a href="#livros" class="link-grow text-ink-300 no-underline">Livros</a></li>
+          <li><a href="#categorias" class="link-grow text-ink-300 no-underline">Categorias</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5 class="font-semibold text-white">Redes sociais</h5>
+        <div class="flex gap-4 text-2xl">
+          <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="inline-block text-ink-300 hover:text-brand-400 hover:animate-pulse-social"><i class="bi bi-instagram"></i></a>
+          <a href="https://x.com" target="_blank" rel="noopener" aria-label="X / Twitter" class="inline-block text-ink-300 hover:text-brand-400 hover:animate-spin"><i class="bi bi-twitter-x"></i></a>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="inline-block text-ink-300 hover:text-brand-400 hover:animate-pulse-social"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="inline-block text-ink-300 hover:text-brand-400 hover:animate-spin"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <hr class="border-ink-700 my-4">
+    <p class="text-center text-ink-400 mb-0">© 2026 StoreBooks. Todos os direitos reservados. Capas: Open Library.</p>
+  </div>
+</footer>
+
+<button id="toTop" class="fixed bottom-5 right-5 hidden h-12 w-12 rounded-full bg-brand-400 text-ink-950 shadow-glow transition hover:scale-110 active:scale-95" aria-label="Voltar ao topo" data-action="top"><i class="bi bi-arrow-up"></i></button>
+
+<!-- ================= CARRINHO (Offcanvas) ================= -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
+  <div class="offcanvas-header border-bottom border-ink-700">
+    <h5 class="offcanvas-title font-display text-brand-400"><i class="bi bi-bag"></i> Seu carrinho</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+  </div>
+  <div class="offcanvas-body flex flex-col">
+    <div id="cartItems" class="flex-1 overflow-auto"></div>
+    <div id="cartFooter" class="border-top border-ink-700 pt-3 mt-3">
+      <div class="input-group input-group-sm mb-3">
+        <input id="couponInput" class="form-control" placeholder="Cupom (ex.: STORE10)">
+        <button class="btn btn-outline-warning" data-action="coupon">Aplicar</button>
+      </div>
+      <div class="flex justify-between text-ink-300"><span>Subtotal</span><span id="tSub"></span></div>
+      <div class="flex justify-between text-ink-300"><span>Desconto</span><span id="tDisc"></span></div>
+      <div class="flex justify-between text-ink-300"><span>Frete</span><span id="tShip"></span></div>
+      <div class="flex justify-between text-xl font-semibold text-white mt-2"><span>Total</span><span id="tTotal" class="text-brand-400"></span></div>
+      <button class="btn-yellow w-full mt-3" data-action="checkout">Finalizar compra</button>
+      <button class="btn-dark w-full mt-2" data-action="clear">Esvaziar carrinho</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL DETALHES ================= -->
+<div class="modal fade" id="viewModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content" id="viewBody"></div></div></div>
+
+<!-- ================= MODAL CHECKOUT ================= -->
+<div class="modal fade" id="checkoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content" id="checkoutBody"></div></div></div>
+
+<!-- Toasts -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toasts" style="z-index:2000"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
